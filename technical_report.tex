@@ -31,7 +31,9 @@
 \titleformat{\chapter}{\normalfont\LARGE\bfseries}{\thechapter.}{12pt}{}
 \titlespacing{\chapter}{0pt}{0pt}{12pt}
 \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{12pt}{}
+\titlespacing{\section}{0pt}{0pt}{6pt}
 \titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{12pt}{}
+\titlespacing{\subsection}{0pt}{0pt}{3pt}
 % -
 
 % Definitions
@@ -69,9 +71,9 @@ To aid in my investigation, I have been provided with a list of commonly used pa
 
 
 % Glossary
-\pagebreak
-\chapter{Glossary}
-todo: Maybe add a glossary - one would probably included in this sort of technical report (that is, one with a not necessarily technical audience)
+% \pagebreak
+% \chapter{Glossary}
+% todo: Maybe add a glossary - one would probably included in this sort of technical report (that is, one with a not necessarily technical audience)
 % -
 
 
@@ -130,7 +132,7 @@ The first stage of investigation is to find the IP address of Price's machine on
 \subsection{Using \texttt{ifconfig} to find the host-only network interface name}
 In order to be able to use \texttt{arp-scan} in the second part of this stage, I needed to know the interface name of the host-only network on the attack VM. To find the interface name I used the \term{ifconfig} command.
 
-As we know that the NAT adaptor interface is called \textit{ens33}, the relevant output of this command is:
+As I knew that the NAT adaptor interface is called \textit{ens33}, the relevant output of this command is:
 \begin{Verbatim}[frame=leftline]
 ens34     Link encap:Ethernet  HWaddr 00:0c:29:72:88:f2
           inet addr:192.168.254.135  Bcast:192.168.254.255  Mask:255.255.255.0
@@ -142,7 +144,7 @@ ens34     Link encap:Ethernet  HWaddr 00:0c:29:72:88:f2
           RX bytes:9729912 (9.7 MB)  TX bytes:10084091 (10.0 MB)
 \end{Verbatim}
 
-From this, we can discern that the host-only interface name is \textit{ens34}.
+From this, I could discern that the host-only interface name is \textit{ens34}.
 
 \subsection{Using \texttt{arp-scan} to find the IP address of Price's machine}
 In order to discover the IP addresses of machines in the network I used the command:\\
@@ -160,12 +162,7 @@ Starting arp-scan 1.8.1 with 256 hosts (http://www.nta-monitor.com/tools/arp-sca
 Ending arp-scan 1.8.1: 256 hosts scanned in 1.342 seconds (190.76 hosts/sec). 3 responded
 \end{Verbatim}
 
-As my attack machine IP is not shown and 192.168.254.1/254 are \textit{services} operated by VMWare to support the operation of the host-only network, I can see that \textbf{192.168.254.132} must be the IP address of the Price's machine.
-
-\subsubsection{Capabilities}
-todo: detail the capabilities - maybe move these sections into a separate chapter
-\subsubsection{Alternative tools/methods}
-todo: detail alternative methods
+As my attack machine IP is not shown and 192.168.254.1/254 are \textit{services} operated by VMWare to support the operation of the host-only network, I could see that \textbf{192.168.254.132} must be the IP address of the Price's machine.
 
 
 \section{Scanning Price's machine}
@@ -188,7 +185,7 @@ MAC Address: 00:0C:29:E2:A5:34 (VMware)
 Nmap done: 1 IP address (1 host up) scanned in 17.56 seconds
 \end{Verbatim}
 
-From this scan, I can see that port 80 is open and port 443 is closed. Connecting to the machine with a browser brings up a web page and so I can tell that the machine is definitely serving http requests on port 80. I did not find the SSH port in this scan and so it must have been moved from the port 22 (the default) to a different port.
+From this scan, I could see that port 80 was open and port 443 was closed. Connecting to the machine with a browser brought up a web page and so I could tell that the machine is definitely serving http requests on port 80. I did not find the SSH port in this scan and so it must have been moved from the port 22 (the default) to a different port.
 
 \subsection{Expanding the \texttt{nmap} scan to find the SSH port}
 In order to try and find the SSH port without having to run a complete scan of all 65535 ports, I decided to run a scan of ports 1-1000 to see if the SSH service had been moved to a port in this range. To do this, I used the command:\\
@@ -230,7 +227,7 @@ Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 1.20 seconds
 \end{Verbatim}
 
-This command asked Nmap to attempt to do service detection against only port 442 on 192.168.254.132 and the result shows that the SSH service \textit{[version: OpenSSH 7.5p1 Ubuntu 10 (Ubuntu Linux; protocol 2.0)]} has been moved to this port.
+This command asked Nmap to attempt to do service detection against only port 442 on 192.168.254.132 and the result shows that the SSH service \textit{[version: OpenSSH 7.5p1 Ubuntu 10 (Ubuntu Linux; protocol 2.0)]} had been moved to this port.
 
 
 \section{Breaking into Price's account}
@@ -245,7 +242,7 @@ Using Python 3 and pexpect \textit{(a library for handling SSH connections)}, I 
   \item If the correct password is found, the pool is terminated to prevent further processing and the script finishes after performing a basic reconnaissance stage over the SSH
 \end{enumerate}
 
-The full code listing for the script can be found in Appendix~\ref{app:code}.
+The full code listing for the script can be found in Appendix~\ref{app:code:sshcrack_mp}.
 
 \section{Examining Price's account}
 todo: talk about examining the /var/log/auth.log and /etc/passwd files
@@ -264,12 +261,25 @@ todo: discuss steps that I took to conceal the investigation from Price, and det
 
 \pagebreak
 \chapter{Tool Capabilities and Alternative Methods}
-todo: some stuff here maybe
+In this section, I will discuss briefly the capabilities of the tools I used in this investigation and also provide examples of alternative tools/methods that could have used to similar effect.
+
+\section{\texttt{arp-scan}}
+\section{\texttt{nmap}}
+\section{\texttt{python}}
+\section{\texttt{squid}}
+\section{\texttt{wireshark}}
 
 
 \pagebreak
 \chapter{Insider Threat}
 todo: write a report on insider threat...
+\section{Introduction}
+\section{Defining Insider Threat}
+\section{Implications to organisations}
+\section{Examples of Insider Threat}
+\section{Implications of the aforementioned tools}
+\section{Suggested methods for improving security in the future}
+\section{Conclusion}
 
 
 \pagebreak
@@ -307,9 +317,9 @@ todo: brood and conclude
 
 \pagebreak
 \chapter{Code deliverables}
-\label{app:code}
 \section{SSH Password Cracking Script}
-\lstinputlisting[language=Python, frame=single, showstringspaces=false]{code/sshcrack_mp.py}
+\label{app:code:sshcrack_mp}
+\lstinputlisting[language=Python, frame=single, basicstyle=\small, showstringspaces=false]{code/sshcrack_mp.py}
 
 
 \end{document}
