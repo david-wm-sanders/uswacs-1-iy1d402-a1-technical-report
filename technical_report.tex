@@ -13,7 +13,7 @@
 \usepackage{pdfpages}
 \usepackage{fancyvrb}
 \usepackage[parfill]{parskip}
-% \usepackage{titlesec}
+\usepackage{titlesec}
 % -
 
 % Configuration
@@ -27,7 +27,10 @@
 \definecolor{light-gray}{gray}{0.95}
 \newcommand{\term}[1]{\colorbox{light-gray}{\texttt{#1}}}
 % Set up better chapter titling
-% \titleformat{\chapter}{\normalfont\huge}{\thechapter}{15pt}{\huge\textbf}
+\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter.}{10pt}{}
+\titlespacing{\chapter}{0pt}{0pt}{12pt}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{10pt}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{10pt}{}
 % -
 
 % Definitions
@@ -264,7 +267,7 @@ todo: brood and conclude
 
 
 % BIBLIOGRAPHY/REFERENCES
-\pagebreak
+% \pagebreak
 % nocited refs
 \nocite{example:referenceid:here}
 
