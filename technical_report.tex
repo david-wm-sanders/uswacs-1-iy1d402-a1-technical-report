@@ -5,7 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
-\usepackage[a4paper, margin=1in]{geometry}
+\usepackage[a4paper, margin=0.75in]{geometry}
 \usepackage{enumitem}
 \usepackage[colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue]{hyperref}
 \usepackage[nottoc,numbib]{tocbibind}
@@ -14,6 +14,7 @@
 \usepackage{fancyvrb}
 \usepackage[parfill]{parskip}
 \usepackage{titlesec}
+\usepackage{listings}
 % -
 
 % Configuration
@@ -27,10 +28,10 @@
 \definecolor{light-gray}{gray}{0.95}
 \newcommand{\term}[1]{\colorbox{light-gray}{\texttt{#1}}}
 % Set up better chapter titling
-\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter.}{10pt}{}
+\titleformat{\chapter}{\normalfont\LARGE\bfseries}{\thechapter.}{12pt}{}
 \titlespacing{\chapter}{0pt}{0pt}{12pt}
-\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{10pt}{}
-\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{10pt}{}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{12pt}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{12pt}{}
 % -
 
 % Definitions
@@ -169,7 +170,7 @@ todo: detail alternative methods
 
 \section{Scanning Price's machine}
 With the IP address of Price's machine, I used Nmap to scan the machine for open ports and find the SSH service.
-\subsection{Running a basic Nmap scan}
+\subsection{Running a basic \texttt{nmap} scan}
 Initially, I ran a basic Nmap scan using:\\
 \term{sudo nmap 192.168.254.132}
 
@@ -189,7 +190,7 @@ Nmap done: 1 IP address (1 host up) scanned in 17.56 seconds
 
 From this scan, I can see that port 80 is open and port 443 is closed. Connecting to the machine with a browser brings up a web page and so I can tell that the machine is definitely serving http requests on port 80. I did not find the SSH port in this scan and so it must have been moved from the port 22 (the default) to a different port.
 
-\subsection{Expanding the scan to find the SSH port}
+\subsection{Expanding the \texttt{nmap} scan to find the SSH port}
 In order to try and find the SSH port without having to run a complete scan of all 65535 ports, I decided to run a scan of ports 1-1000 to see if the SSH service had been moved to a port in this range. To do this, I used the command:\\
 \term{sudo nmap -p 1-1000 192.168.254.132}
 
@@ -210,7 +211,7 @@ Nmap done: 1 IP address (1 host up) scanned in 14.16 seconds
 
 This scan revealed that there was a service running on open port 442. Although Nmap identifies this service as \textit{cvc\_hostd}, the service identification method used in basic Nmap scans only uses port number to guess the service.
 
-\subsection{Using service detection to confirm the SSH port}
+\subsection{Using \texttt{nmap} service detection to confirm the SSH port}
 I used service detection to see if the SSH port had been moved to port 442. To do this, I used the command:\\
 \term{sudo nmap -sV -p 442 192.168.254.132}
 
@@ -233,7 +234,18 @@ This command asked Nmap to attempt to do service detection against only port 442
 
 
 \section{Breaking into Price's account}
-todo: discuss how I used Python to break into Price's account
+Having discovered the SSH service port, I decided to try and break into Price's account via SSH using the list of passwords provided to me. Doing this manually by hand would be an time-consuming and arduous task individually and so I decided to write a script in Python to automate this attack.
+
+Using Python 3 and pexpect \textit{(a library for handling SSH connections)}, I wrote a script that:
+\begin{enumerate}
+  \item Loads the passwords from the wordlist provided
+  \item Sets up a pool of processes to run tasks - using a pool is faster than attempting each password in series
+  \item Creates a connection attempt task for each password and passes the task to the pool for processing
+  \item Collects the results from finished tasks and checks to see if the task found the correct password
+  \item If the correct password is found, the pool is terminated to prevent further processing and the script finishes after performing a basic reconnaissance stage over the SSH
+\end{enumerate}
+
+The full code listing for the script can be found in Appendix~\ref{app:code}.
 
 \section{Examining Price's account}
 todo: talk about examining the /var/log/auth.log and /etc/passwd files
@@ -241,13 +253,18 @@ todo: talk about examining the /var/log/auth.log and /etc/passwd files
 \section{Setting up persistent access to the machine}
 todo: explain how to set up persistent access to the machine by creating a new account, making it superuser, and hiding it from Price
 
-\section{Setting up a proxy to monitor traffic}
+\section{Setting up a \texttt{squid} proxy to monitor traffic}
 todo: explain how to set up squid on the attack machine
 
 todo: explain how to get Price's machine to route web traffic through the proxy
 
 \section{Concealing the investigation from Price}
 todo: discuss steps that I took to conceal the investigation from Price, and detail some further methods that I could have taken
+
+
+\pagebreak
+\chapter{Tool Capabilities and Alternative Methods}
+todo: some stuff here maybe
 
 
 \pagebreak
@@ -282,9 +299,17 @@ todo: brood and conclude
 
 \pagebreak
 \chapter{Screenshot deliverables}
+\label{app:screenshots}
+
+\pagebreak
+\chapter{File deliverables}
+\label{app:files}
 
 \pagebreak
 \chapter{Code deliverables}
+\label{app:code}
+\section{SSH Password Cracking Script}
+\lstinputlisting[language=Python, frame=single, showstringspaces=false]{code/sshcrack_mp.py}
 
 
 \end{document}
