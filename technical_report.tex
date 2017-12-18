@@ -32,7 +32,9 @@
 \titlespacing{\chapter}{0pt}{0pt}{12pt}
 \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{12pt}{}
 \titlespacing{\section}{0pt}{0pt}{6pt}
+\titleformat{name=\section,numberless}{\normalfont\Large\bfseries}{}{0pt}{}
 \titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{12pt}{}
+\titleformat{name=\subsection,numberless}{\normalfont\large\bfseries}{}{0pt}{}
 \titlespacing{\subsection}{0pt}{0pt}{3pt}
 % -
 
@@ -244,11 +246,42 @@ Using Python 3 and pexpect \textit{(a library for handling SSH connections)}, I 
 
 The full code listing for the script can be found in Appendix~\ref{app:code:sshcrack_mp}.
 
+To attack Price's SSH account \textit{('phillip')} at the IP address 192.168.254.132 on port 442 with the wordlist \textit{('passwords.txt')}, the script can run using:\\
+\term{./sshcrack\_mp.py phillip:192.168.254.132:442 passwords.txt}\footnote{Usage in this way requires a virtual environment in \texttt{venv} with the pexpect dependency installed in it}
+
+The output, with a section of the failed password attempts removed for brevity, is:
+\begin{Verbatim}[frame=leftline]
+Loaded 393 passwords from 'passwords.txt'
+(1/393) Password is not '0'
+(2/393) Password is not 'scorpio'
+(3/393) Password is not 'buddy'
+...
+(222/393) Password is not 'trustno1'
+(223/393) Password is not 'newyork'
+(224/393) Password is 'qwertyuiop'
+Took 1.12 minutes to check 224/393 passwords at a rate of 3.33pw/s.
+Performing recon...
+Logging out.
+\end{Verbatim}
+todo: \^update this to the latest saf output
+
+From the output above, I could see that the script successfully broke into Price's SSH account using the password: \texttt{qwertyuiop}
+
+I will discuss the information returned by the reconnaissance phase of the script in the next section.
+
 \section{Examining Price's account}
 todo: talk about examining the /var/log/auth.log and /etc/passwd files
 
+Using the password discovered in the previous stage, I logged into Price's account via SSH to examine it and the machine remotely.
+
 \section{Setting up persistent access to the machine}
 todo: explain how to set up persistent access to the machine by creating a new account, making it superuser, and hiding it from Price
+
+In order to ensure access to the machine is persistent, even if Price changes his password, I decided to create a new superuser on his machine. This was achieved with the following steps:
+\begin{enumerate}
+  \item todo: create user
+  \item todo: make user member of sudo group
+\end{enumerate}
 
 \section{Setting up a \texttt{squid} proxy to monitor traffic}
 todo: explain how to set up squid on the attack machine
@@ -258,14 +291,33 @@ todo: explain how to get Price's machine to route web traffic through the proxy
 \section{Concealing the investigation from Price}
 todo: discuss steps that I took to conceal the investigation from Price, and detail some further methods that I could have taken
 
+Steps could include:
+\begin{enumerate}
+  \item Wiping the \texttt{/var/log/auth.log} or modifying it (and it's compressed older copies) to remove the ssh login attempt lines
+  \item Clearing the bash history
+  \item Clearing any SSH specific logs
+  \item Using uptime to check that I am the only user of the machine upon SSH login -- as in, Price is not also using the machine
+\end{enumerate}
+
 
 \pagebreak
 \chapter{Tool Capabilities and Alternative Methods}
 In this section, I will discuss briefly the capabilities of the tools I used in this investigation and also provide examples of alternative tools/methods that could have used to similar effect.
 
 \section{\texttt{arp-scan}}
+\texttt{arp-scan} is a command-line tool for system discovery and fingerprinting.\footnote{http://www.nta-monitor.com/wiki/index.php/Arp-scan\_User\_Guide} By constructing and sending ARP \textit{(Address Resolution Protocol)} requests to specified IP addresses, it can be used to discover hosts connected to a local IP network. The ARP protocol determines the link-layer (layer 2) address for a specified network-layer (layer 3) address. It can be used to discover all hosts, including those blocking traffic with firewalls. Although designed to be used for any link-layer and network-layer protocols, in practice it is only used for IPv4 Ethernet and 802.11 wireless traffic. IPv6 uses a different protocol called NDP \textit{(Network Discovery Protocol)}.
+% In the investigation, \texttt{arp-scan} was used to discover the IP address of Price's machine.
+\subsection*{Alternative Tools/Methods}
+\texttt{nmap} can also be used to perform network discovery with the command:\\
+\term{todo: put command here}
+
 \section{\texttt{nmap}}
+\texttt{nmap} \textit{("Network Mapper")} is an open source tool for network exploration and security auditing.\footnote{https://nmap.org/book/man.html} Although it can be used to scan individual hosts, it was designed to allow large networks to be scanned rapidly. \texttt{nmap} is capable of determining the available hosts on a network, the services that these hosts are providing, the operating systems that they are running, the type of packet filters/firewalls that are in use, and other characteristics. As well as being used for security audits, it can also be useful for routine system/network administration tasks such as inventorying the network, service upgrade schedule management, and monitoring host/service uptime.
+\subsection*{Alternative Tools/Methods}
+Although alternative tools do exist, \texttt{nmap} is arguably the most complete and well-supported network scanning tool. It was originally released in September 1997 but the latest stable release was on 31\textsuperscript{st} July 2017.
+
 \section{\texttt{python}}
+Python is a high-level programming language that supports...
 \section{\texttt{squid}}
 \section{\texttt{wireshark}}
 
