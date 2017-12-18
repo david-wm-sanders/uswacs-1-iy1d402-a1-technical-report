@@ -127,7 +127,7 @@ The first stage of investigation is to find the IP address of Price's machine on
 In order to be able to use \texttt{arp-scan} in the second part of this stage, I needed to know the interface name of the host-only network on the attack VM. To find the interface name I used the \term{ifconfig} command.
 
 As we know that the NAT adaptor interface is called \textit{ens33}, the relevant output of this command is:
-\begin{Verbatim}
+\begin{Verbatim}[frame=leftline]
 ens34     Link encap:Ethernet  HWaddr 00:0c:29:72:88:f2
           inet addr:192.168.254.135  Bcast:192.168.254.255  Mask:255.255.255.0
           inet6 addr: fe80::490:c374:f983:b700/64 Scope:Link
@@ -145,7 +145,7 @@ In order to discover the IP addresses of machines in the network I used the comm
 \term{sudo arp-scan -lI ens34}
 
 The output of this command was:
-\begin{Verbatim}[fontsize=\small]
+\begin{Verbatim}[frame=leftline, fontsize=\small]
 Interface: ens34, datalink type: EN10MB (Ethernet)
 Starting arp-scan 1.8.1 with 256 hosts (http://www.nta-monitor.com/tools/arp-scan/)
 192.168.254.1	00:50:56:c0:00:01	VMware, Inc.
@@ -171,7 +171,7 @@ Initially, I ran a basic Nmap scan using:\\
 \term{sudo nmap 192.168.254.132}
 
 The result of this scan was:
-\begin{Verbatim}
+\begin{Verbatim}[frame=leftline]
 Starting Nmap 7.01 ( https://nmap.org ) at 2017-12-06 13:31 GMT
 Nmap scan report for 192.168.254.132
 Host is up (0.00045s latency).
@@ -191,7 +191,7 @@ In order to try and find the SSH port without having to run a complete scan of a
 \term{sudo nmap -p 1-1000 192.168.254.132}
 
 The result of this command was:
-\begin{Verbatim}
+\begin{Verbatim}[frame=leftline]
 Starting Nmap 7.01 ( https://nmap.org ) at 2017-12-06 13:34 GMT
 Nmap scan report for 192.168.254.132
 Host is up (0.00045s latency).
@@ -212,7 +212,7 @@ I used service detection to see if the SSH port had been moved to port 442. To d
 \term{sudo nmap -sV -p 442 192.168.254.132}
 
 The result of this command was:
-\begin{Verbatim}
+\begin{Verbatim}[frame=leftline]
 Starting Nmap 7.01 ( https://nmap.org ) at 2017-12-06 13:38 GMT
 Nmap scan report for 192.168.254.132
 Host is up (0.00041s latency).
