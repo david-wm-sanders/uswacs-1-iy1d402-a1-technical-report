@@ -268,28 +268,38 @@ Logging out.
 
 From the output above, I could see that the script successfully broke into Price's SSH account using the password: \texttt{qwertyuiop}
 
+
 \section{Examining Price's account}
 A reconnaissance phase is performed automatically as the last step in the script used to break into Price's SSH account. In this stage, the script calls a couple of commands over the SSH connection and writes the results into a \texttt{recon.txt} file on the attack machine. A copy of this file is included in Appendix~\ref{app:files:recon} -- included in this is a \term{cat} of the \texttt{/etc/passwd} file.
 
-Using the password discovered in the previous step of the investigation, I logged into Price's account via SSH to examine it and the machine remotely, and to gather more intelligence. [see screenshot proving log in and intel gathering]
+I could see from the \texttt{recon.txt} file that Price is a member of the sudo group. This made the rest of the investigation easier to conceal as I could wipe/modify logs and create new users in order to keep the investigation concealed.
 
-I also used \texttt{scp} to pull a copy of the \texttt{/var/log/auth.log} from Price's machine -- it is attached in Appendix~\ref{app:files:authlog}. To do this, I used the command: \term{scp -P 442 phillip@192.168.254.132:/var/log/auth.log auth.log}
+Using the password discovered in the previous step of the investigation, I logged into Price's account via SSH to examine it and the machine remotely, and to gather more intelligence. [see screenshot proving log in and intel gathering] The command that I used to connect over SSH was:\\
+\term{ssh -p 442 phillip@192.168.254.132}
 
-In this log file, I can see a lot of evidence of failed attempts to log into Price's SSH account on the machine before the correct password is found and authentication is successful -- I will need to remove this file to conceal the investigation from Price.
+I also used \texttt{scp} to pull a copy of the \texttt{/var/log/auth.log} from Price's machine -- it is attached, in a reduced form, in Appendix~\ref{app:files:authlog}. To do this, I used the command:\\
+\term{scp -P 442 phillip@192.168.254.132:/var/log/auth.log auth.log}
+
+In this log file, I can see a lot of evidence of failed attempts to log into Price's SSH account on the machine before the correct password is found and authentication is successful -- I will need to remove or modify this file to conceal the investigation from Price.
+
 
 \section{Setting up persistent access to the machine}
-todo: explain how to set up persistent access to the machine by creating a new account, making it superuser, and hiding it from Price
+In order to maintain persistent access to Price's machine I decided to create a new user with the command:\\
+\term{sudo adduser systemd-usertest}
 
-In order to ensure access to the machine is persistent, even if Price changes his password, I decided to create a new superuser on his machine. This was achieved with the following steps:
-\begin{enumerate}
-  \item todo: create user
-  \item todo: make user member of sudo group
-\end{enumerate}
+I used the username \textit{'systemd-usertest'} in an effort to disguise my presence from Price. As systemd provides a myriad of services, Price would hopefully attribute this new user to a \texttt{systemd} update.
+
+After creating the \textit{'systemd-usertest'} user, I made it a member of the \texttt{sudo} group with the command:\\
+\term{sudo usermod -aG sudo systemd-usertest}
+
+With this new account, I was able and will continue to be able to access Price's machine on demand for the course of the investigation.
+
 
 \section{Setting up a \texttt{squid} proxy to monitor traffic}
 todo: explain how to set up squid on the attack machine
 
 todo: explain how to get Price's machine to route web traffic through the proxy
+
 
 \section{Concealing the investigation from Price}
 todo: discuss steps that I took to conceal the investigation from Price, and detail some further methods that I could have taken
@@ -388,7 +398,7 @@ todo: brood and conclude
 \label{app:files:recon}
 \lstinputlisting[frame=single, basicstyle=\small\ttfamily, showstringspaces=false, breaklines=true, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space}]{deliverables/files/recon.txt}
 
-\section{\texttt{auth.log}}
+\section{\texttt{/var/log/auth.log}}
 \label{app:files:authlog}
 \lstinputlisting[frame=single, basicstyle=\small\ttfamily, showstringspaces=false, breaklines=true, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space}]{deliverables/files/auth.log}
 
