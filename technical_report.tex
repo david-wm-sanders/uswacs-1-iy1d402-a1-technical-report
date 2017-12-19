@@ -294,11 +294,36 @@ After creating the \textit{'systemd-usertest'} user, I made it a member of the \
 
 With this new account, I was able and will continue to be able to access Price's machine on demand for the course of the investigation.
 
+The screenshot in Appendix [blahref] shows me accessing this new account over SSH from my attack machine.
+
 
 \section{Setting up a \texttt{squid} proxy to monitor traffic}
-todo: explain how to set up squid on the attack machine
+\subsection{Setting up \texttt{squid} on the attack machine}
+In order to monitor Price's web traffic I set up a \texttt{squid} proxy on my attack machine. I did this using the following commands:
+\begin{enumerate}
+  \item Install \texttt{squid} with:\\
+        \term{sudo apt install squid}
+  \item Open the \texttt{squid.conf} file for editing by using:\\
+        \term{sudo vim /etc/squid/squid.conf}
+  \item In the relevant section of the configuration file, define a new ACL that defines a source and IP address range with:\\
+        \term{acl monitornet src 192.168.254.0/24}
+  \item In the relevant section of the configuration file, define a \texttt{http\_access} rule that allows \textit{monitornet} with:\\
+        \term{http\_access allow monitornet}
+  \item If ufw (firewall) is active, allow connections to port 3128 from relevant IP addresses with:\\
+        \term{sudo ufw allow from 192.168.254.0/24 to any port 3128}
+\end{enumerate}
 
-todo: explain how to get Price's machine to route web traffic through the proxy
+\subsection{Setting up Price's machine to use the proxy}
+% I could have configured Price's machine to use the proxy by entering the IP address and \texttt{squid} port into the proxy settings in Firefox. However, it would be easy for Price to see that a change had been made if he checked the proxy settings.
+%
+% Instead, I decided to configure the machine to use the proxy at the system level by using, via SSH to Price's machine, the commands:
+% \begin{itemize}
+%   \item \term{}
+% \end{itemize}
+
+
+\subsection{Proving with \texttt{wireshark} that the proxy is working}
+
 
 
 \section{Concealing the investigation from Price}
@@ -322,8 +347,9 @@ In this section, I will discuss briefly the capabilities of the tools I used in 
 
 In the investigation, \texttt{arp-scan} was used to discover the IP address of Price's machine.
 \subsection*{Alternative Tools/Methods}
-\texttt{nmap} can also be used to perform network discovery with the command:\\
-\term{todo: put command here}
+\texttt{nmap} can also be used to perform network discovery.
+% with the command:\\
+% \term{todo: put command here}
 
 \section{\texttt{nmap}}
 \texttt{nmap} \textit{("Network Mapper")} is an open source tool for network exploration and security auditing.\footnote{https://nmap.org/book/man.html} Although it can be used to scan individual hosts, it was designed to allow large networks to be scanned rapidly. \texttt{nmap} is capable of determining the available hosts on a network, the services that these hosts are providing, the operating systems that they are running, the type of packet filters/firewalls that are in use, and other characteristics. As well as being used for security audits, it can also be useful for routine system/network administration tasks such as inventorying the network, service upgrade schedule management, and monitoring host/service uptime.
@@ -349,6 +375,7 @@ There a lot of different forwarding proxies that could have been used in place o
 Squid was a good choice because it is available in the package repositories for Ubuntu (the base of the attack VM used in the investigation), and is well-supported and documented.
 
 \section{\texttt{wireshark}}
+todo: Write some stuff about wireshark here...
 
 
 \pagebreak
