@@ -267,7 +267,7 @@ todo: \^update this to the latest saf output
 
 From the output above, I could see that the script successfully broke into Price's SSH account using the password: \texttt{qwertyuiop}
 
-I will discuss the information returned by the reconnaissance phase of the script in the next section.
+% I will discuss the information returned by the reconnaissance phase of the script in the next section.
 
 \section{Examining Price's account}
 todo: talk about examining the /var/log/auth.log and /etc/passwd files
@@ -306,7 +306,8 @@ In this section, I will discuss briefly the capabilities of the tools I used in 
 
 \section{\texttt{arp-scan}}
 \texttt{arp-scan} is a command-line tool for system discovery and fingerprinting.\footnote{http://www.nta-monitor.com/wiki/index.php/Arp-scan\_User\_Guide} By constructing and sending ARP \textit{(Address Resolution Protocol)} requests to specified IP addresses, it can be used to discover hosts connected to a local IP network. The ARP protocol determines the link-layer (layer 2) address for a specified network-layer (layer 3) address. It can be used to discover all hosts, including those blocking traffic with firewalls. Although designed to be used for any link-layer and network-layer protocols, in practice it is only used for IPv4 Ethernet and 802.11 wireless traffic. IPv6 uses a different protocol called NDP \textit{(Network Discovery Protocol)}.
-% In the investigation, \texttt{arp-scan} was used to discover the IP address of Price's machine.
+
+In the investigation, \texttt{arp-scan} was used to discover the IP address of Price's machine.
 \subsection*{Alternative Tools/Methods}
 \texttt{nmap} can also be used to perform network discovery with the command:\\
 \term{todo: put command here}
@@ -317,7 +318,7 @@ In this section, I will discuss briefly the capabilities of the tools I used in 
 Although alternative tools do exist, \texttt{nmap} is arguably the most complete and well-supported network scanning tool. It was originally released in September 1997 but the latest stable release was on 31\textsuperscript{st} July 2017.
 
 \section{\texttt{python}}
-Python is a high-level scripted programming language that supports multiple paradigms: object-oriented, imperative, functional, procedural, and reflective. Though first released in 1991, the latest version (3.6.3) was released on 3\textsuperscript{rd} October 2017.
+Python\footnote{https://www.python.org/} is a high-level scripted programming language that supports multiple paradigms: object-oriented, imperative, functional, procedural, and reflective. Though first released in 1991, the latest version (3.6.3) was released on 3\textsuperscript{rd} October 2017.
 
 With a substantial standard library and a plethora of third-party libraries (such as pexpect) available, it is highly suited for use as a programming language to develop both small scripts, for automation of tasks; and larger programs, which could include GUIs (Graphical User Interfaces).
 
@@ -328,6 +329,12 @@ The reference implementation of Python, \textit{CPython}, is open source softwar
 Almost any other programming language could have been used for the investigation in lieu of Python. As long as a library, for that language, exists that allows it to make SSH connections, or the language is capable of calling other programs \textit{('ssh')} on the machine, it would be possible to create an equivalent SSH cracking script.
 
 \section{\texttt{squid}}
+Squid\footnote{http://www.squid-cache.org/} is a web proxy that provides caching and forwarding services. Squid includes some support for protocols such as Internet Gopher, SSL, TLS, and HTTPS but is mainly used for HTTP and FTP traffic. During the investigation Squid was used to filter and monitor traffic but it can also be used to speed up traffic by caching web, DNS, and other lookup traffic for those sharing network resources.
+\subsection*{Alternative Tools/Methods}
+There a lot of different forwarding proxies that could have been used in place of Squid, such as \href{https://docs.trafficserver.apache.org/en/5.3.x/admin/forward-proxy.en.html}{Apache Traffic Server}, \href{https://www.telerik.com/fiddler}{Fiddler}, or \href{https://tinyproxy.github.io/}{Tinyproxy}.
+
+Squid was a good choice because it is available in the package repositories for Ubuntu (the base of the attack VM used in the investigation), and is well-supported and documented.
+
 \section{\texttt{wireshark}}
 
 
