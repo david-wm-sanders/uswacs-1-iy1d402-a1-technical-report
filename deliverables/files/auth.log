@@ -1,0 +1,20 @@
+Dec 19 07:26:29 ubuntu sshd[5700]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:26:29 ubuntu sshd[5696]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:26:29 ubuntu sshd[5708]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:26:29 ubuntu sshd[5699]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:26:29 ubuntu sshd[5707]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:26:29 ubuntu sshd[5697]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:26:29 ubuntu sshd[5701]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:26:29 ubuntu sshd[5698]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:26:31 ubuntu sshd[5696]: Failed password for phillip from 192.168.254.135 port 40038 ssh2
+Dec 19 07:26:31 ubuntu sshd[5700]: Failed password for phillip from 192.168.254.135 port 40046 ssh2
+...
+Dec 19 07:27:28 ubuntu sshd[6139]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:27:28 ubuntu sshd[6141]: Accepted password for phillip from 192.168.254.135 port 40486 ssh2
+Dec 19 07:27:28 ubuntu sshd[6141]: pam_unix(sshd:session): session opened for user phillip by (uid=0)
+Dec 19 07:27:28 ubuntu systemd-logind[692]: New session 29 of user phillip.
+Dec 19 07:27:28 ubuntu sshd[6165]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.254.135  user=phillip
+Dec 19 07:27:29 ubuntu sshd[6197]: Received disconnect from 192.168.254.135 port 40486:11: disconnected by user
+Dec 19 07:27:29 ubuntu sshd[6197]: Disconnected from user phillip 192.168.254.135 port 40486
+Dec 19 07:27:29 ubuntu sshd[6141]: pam_unix(sshd:session): session closed for user phillip
+Dec 19 07:27:29 ubuntu systemd-logind[692]: Removed session 29.
