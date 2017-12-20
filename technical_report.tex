@@ -15,6 +15,7 @@
 \usepackage[parfill]{parskip}
 \usepackage{titlesec}
 \usepackage{listings}
+\usepackage{graphicx}
 % -
 
 % Configuration
@@ -36,6 +37,8 @@
 \titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{12pt}{}
 \titleformat{name=\subsection,numberless}{\normalfont\large\bfseries}{}{0pt}{}
 \titlespacing{\subsection}{0pt}{0pt}{3pt}
+% Set up the images path
+\graphicspath{ {deliverables/screenshots/} }
 % -
 
 % Definitions
@@ -235,7 +238,7 @@ This command asked Nmap to attempt to do service detection against only port 442
 
 
 \section{Breaking into Price's account}
-Having discovered the SSH service port, I decided to try and break into Price's account via SSH using the list of passwords provided to me. Doing this manually by hand would be an time-consuming and arduous task individually and so I decided to write a script in Python to automate this attack.
+Having discovered the SSH service port, I decided to try and break into Price's account via SSH using the list of passwords provided to me. Doing this manually by hand would be a time-consuming and arduous task individually and so I decided to write a script in Python to automate this attack.
 
 Using Python 3 and pexpect \textit{(a library for handling SSH connections)}, I wrote a script that:
 \begin{enumerate}
@@ -269,7 +272,7 @@ Logging out.
 From the output above, I could see that the script successfully broke into Price's SSH account using the password: \texttt{qwertyuiop}
 
 
-\section{Examining Price's account}
+\section{Examining Price's machine}
 A reconnaissance phase is performed automatically as the last step in the script used to break into Price's SSH account. In this stage, the script calls a couple of commands over the SSH connection and writes the results into a \texttt{recon.txt} file on the attack machine. A copy of this file is included in Appendix~\ref{app:files:recon} -- included in this is a \term{cat} of the \texttt{/etc/passwd} file.
 
 I could see from the \texttt{recon.txt} file that Price is a member of the sudo group. This made the rest of the investigation easier to conceal as I could wipe/modify logs and create new users in order to keep the investigation concealed.
@@ -280,7 +283,7 @@ Using the password discovered in the previous step of the investigation, I logge
 I also used \texttt{scp} to pull a copy of the \texttt{/var/log/auth.log} from Price's machine -- it is attached, in a reduced form, in Appendix~\ref{app:files:authlog}. To do this, I used the command:\\
 \term{scp -P 442 phillip@192.168.254.132:/var/log/auth.log auth.log}
 
-In this log file, I can see a lot of evidence of failed attempts to log into Price's SSH account on the machine before the correct password is found and authentication is successful -- I will need to remove or modify this file to conceal the investigation from Price.
+In this log file, I can see a lot of evidence of failed attempts to log into Price's SSH account on the machine before the correct password is found and authentication is successful -- I removed this file to conceal the investigation from Price.
 
 
 \section{Setting up persistent access to the machine}
@@ -295,6 +298,27 @@ After creating the \textit{'systemd-usertest'} user, I made it a member of the \
 With this new account, I was able and will continue to be able to access Price's machine on demand for the course of the investigation.
 
 The screenshot in Appendix [blahref] shows me accessing this new account over SSH from my attack machine.
+
+In order to hide the investigation from Price, I needed to prevent this new user from appearing on the login screen. To do this, I used the following steps over the SSH connection to his machine:
+\begin{enumerate}
+  \item Change directory to the AccountsServices directory with:\\
+        \term{cd /var/lib/AccountService}
+  \item Copy Prices's AccountsService file to a new \textit{'systemd-usertest'} AccountService file with:\\
+        \term{sudo cp users/phillip users/systemd-usertest}
+  \item Open the file for editing with nano using:\\
+        \term{sudo nano users/systemd-usertest}
+  \item Make \textit{'systemd-usertest'} a SystemAccount by modifying the file to read:
+        \begin{Verbatim}[frame=leftline]
+[User]
+Language=en_GB
+FormatsLocale=en_GB.UTF-8
+XSession=
+SystemAccount=true
+
+[InputSource0]
+xkb=gb
+        \end{Verbatim}
+\end{enumerate}
 
 
 \section{Setting up a \texttt{squid} proxy to monitor traffic}
@@ -321,9 +345,13 @@ In order to monitor Price's web traffic I set up a \texttt{squid} proxy on my at
 %   \item \term{}
 % \end{itemize}
 
+I logged into Price's machine, opened Firefox and configured it to use the proxy by entering the IP address of my attack machine and the \texttt{squid} proxy port (3128) in the settings.
+
+This was not very concealed and could have been noticed by Price.
+
 
 \subsection{Proving with \texttt{wireshark} that the proxy is working}
-
+To prove that Price's machine was using the proxy on the attack machine correctly, I used \texttt{wireshark} to monitor the network. I have included a screenshot in Appendix~[x] and a link to the \texttt{capture1.pcapng} file in Appendix~[x].
 
 
 \section{Concealing the investigation from Price}
@@ -331,7 +359,6 @@ todo: discuss steps that I took to conceal the investigation from Price, and det
 
 Steps could include:
 \begin{enumerate}
-  \item Wiping the \texttt{/var/log/auth.log} or modifying it (and it's compressed older copies) to remove the ssh login attempt lines
   \item Clearing the bash history
   \item Clearing any SSH specific logs
   \item Using uptime to check that I am the only user of the machine upon SSH login -- as in, Price is not also using the machine
@@ -417,7 +444,42 @@ todo: brood and conclude
 
 \pagebreak
 \chapter{Screenshot deliverables}
-\label{app:screenshots}
+\section{\texttt{ifconfig}, \texttt{arp-scan}, and \texttt{nmap}}
+\label{app:screenshots:1}
+\begin{figure}[h!]
+% \includegraphics[height=\textwidth, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-06-13-41-10}
+\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-06-13-41-10}
+\end{figure}
+\pagebreak
+\section{Connecting to Price's account with \texttt{ssh}}
+\label{app:screenshots:2}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-15-19-29}
+\end{figure}
+\pagebreak
+\section{Copying the \texttt{auth.log} with \texttt{scp}}
+\label{app:screenshots:3}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-15-59-43}
+\end{figure}
+\pagebreak
+\section{Connecting to the new \textit{'systemd-usertest'} account with \texttt{ssh}}
+\label{app:screenshots:4}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-20-19-08}
+\end{figure}
+\pagebreak
+\section{\texttt{ip a} on the attack machine}
+\label{app:screenshots:5}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-20-16-17-08}
+\end{figure}
+\pagebreak
+\section{\texttt{ip a} on Price's machine}
+\label{app:screenshots:6}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-20-16-17-51}
+\end{figure}
 
 \pagebreak
 \chapter{File deliverables}
@@ -431,7 +493,7 @@ todo: brood and conclude
 
 \pagebreak
 \chapter{Code deliverables}
-\section{SSH Password Cracking Script}
+\section{\texttt{sshcrack\_mp.py} - SSH Password Cracking Script}
 \label{app:code:sshcrack_mp}
 \lstinputlisting[language=Python, frame=single, basicstyle=\small\ttfamily, showstringspaces=false]{deliverables/code/sshcrack_mp.py}
 
