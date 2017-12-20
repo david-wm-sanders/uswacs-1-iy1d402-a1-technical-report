@@ -16,6 +16,7 @@
 \usepackage{titlesec}
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{float}
 % -
 
 % Configuration
@@ -42,7 +43,7 @@
 % -
 
 % Definitions
-\title{IY1D402\thanks{University of South Wales, National Cyber Security Academy}\\{\textit{\small Cyber Security Tools And Practices}}\\Assessment 1 Remote Exploitation Report}
+\title{IY1D402\thanks{National Cyber Security Academy, University of South Wales, UK}\\{\textit{\small Cyber Security Tools And Practices}}\\Assessment 1 Remote Exploitation Report}
 \author{David Sanders\\{\LARGE 17135397}}
 \date{\today}
 % -
@@ -54,13 +55,17 @@
 \maketitle
 \pagebreak
 % \includepdf[pages={1}]{assignmentbrief/IY1D402_CW1M_Cover_PRO_PROJECT1.pdf}
+\fontsize{11.5pt}{11.5pt}\selectfont
 \tableofcontents
+\fontsize{12pt}{12pt}\selectfont
 % -
 
 % Introduction
 \pagebreak
 \chapter{Introduction}
-For the first formal assessment of our IY1D402 \textit{(Cyber Security Tools and Practices)} we have been given a real-world scenario. We have been asked to, individually, conduct an investigation before writing a report that details the methodology that we followed during our investigation, presents our findings, discusses the capabilities of the tools we used, describes alternative methods that could have been used, and explains the nature of \textit{'insider threat'}. The target audience is a Senior Management Team and so, although it is a technical, this report will attempt to present technical aspects with enough explanation to make them understandable by those who are not technical specialists.
+For the first formal assessment of our IY1D402 \textit{(Cyber Security Tools and Practices)} we have been given a real-world scenario. We have been asked to conduct an investigation before writing a report that details the methodology that we followed during our investigation, presents our findings, discusses the capabilities of the tools we used, describes alternative methods that could have been used, and explains the nature of \textit{'insider threat'}.
+
+% The target audience is a Senior Management Team and so, although it is a technical, this report will attempt to present technical aspects with enough explanation to make them understandable by those who are not technical specialists.
 
 \section{Scenario}
 I am the Senior Technical Officer at eCorp and have been asked by the Senior Management Team to investigate an employee -- Phillip Price -- who is suspected of exfiltrating Intellectual Property (IP) from the company.
@@ -85,7 +90,7 @@ To aid in my investigation, I have been provided with a list of commonly used pa
 % Preliminary Report
 \pagebreak
 \chapter{Preliminary Report}
-During the investigation, I gathered a lot of information regarding Price's machine and account. I will summarise the most important points in a table below and detail fully the methodology by which I acquired this information in the next chapter of the report.
+During the investigation, I gathered a lot of information regarding Price's machine and account. I will summarise the most important points in a table below and detail fully the methodology by which I acquired this information in the next part of the report.
 
 \begin{table}[h!]
   \centering
@@ -134,9 +139,9 @@ After completing this steps, I \textit{'powered on'} both of the virtual machine
 
 
 \section{Searching the network}
-The first stage of investigation is to find the IP address of Price's machine on the network -- in the real world, this IP would likely be provided to us by the network administrator. However, even though it would be harder to do in a network with more than two machines, I will describe how I used \texttt{ifconfig} and \texttt{arp-scan} to find the IP address.
+The first stage of investigation is to find the IP address of Price's machine on the network -- in the real world, this IP would likely be provided to us by the network administrator. However, even though it would be harder to do in a network with more than two machines, I will describe how I used \texttt{ifconfig} and \texttt{arp-scan} to find the IP address. A screenshot of the \texttt{arp-scan} and \texttt{nmap} scans can be found in Appendix~\ref{app:screenshots:1}.
 
-\subsection{Using \texttt{ifconfig} to find the host-only network interface name}
+\subsection*{Using \texttt{ifconfig} to find the host-only network interface name}
 In order to be able to use \texttt{arp-scan} in the second part of this stage, I needed to know the interface name of the host-only network on the attack VM. To find the interface name I used the \term{ifconfig} command.
 
 As I knew that the NAT adaptor interface is called \textit{ens33}, the relevant output of this command is:
@@ -153,7 +158,7 @@ ens34     Link encap:Ethernet  HWaddr 00:0c:29:72:88:f2
 
 From this, I could discern that the host-only interface name is \textit{ens34}.
 
-\subsection{Using \texttt{arp-scan} to find the IP address of Price's machine}
+\subsection*{Using \texttt{arp-scan} to find the IP address of Price's machine}
 In order to discover the IP addresses of machines in the network I used the command:\\
 \term{sudo arp-scan -lI ens34}
 
@@ -174,7 +179,7 @@ As my attack machine IP is not shown and 192.168.254.1/254 are \textit{services}
 
 \section{Scanning Price's machine}
 With the IP address of Price's machine, I used Nmap to scan the machine for open ports and find the SSH service.
-\subsection{Running a basic \texttt{nmap} scan}
+\subsection*{Running a basic \texttt{nmap} scan}
 Initially, I ran a basic Nmap scan using:\\
 \term{sudo nmap 192.168.254.132}
 
@@ -194,7 +199,7 @@ Nmap done: 1 IP address (1 host up) scanned in 17.56 seconds
 
 From this scan, I could see that port 80 was open and port 443 was closed. Connecting to the machine with a browser brought up a web page and so I could tell that the machine is definitely serving http requests on port 80. I did not find the SSH port in this scan and so it must have been moved from the port 22 (the default) to a different port.
 
-\subsection{Expanding the \texttt{nmap} scan to find the SSH port}
+\subsection*{Expanding the \texttt{nmap} scan to find the SSH port}
 In order to try and find the SSH port without having to run a complete scan of all 65535 ports, I decided to run a scan of ports 1-1000 to see if the SSH service had been moved to a port in this range. To do this, I used the command:\\
 \term{sudo nmap -p 1-1000 192.168.254.132}
 
@@ -215,7 +220,7 @@ Nmap done: 1 IP address (1 host up) scanned in 14.16 seconds
 
 This scan revealed that there was a service running on open port 442. Although Nmap identifies this service as \textit{cvc\_hostd}, the service identification method used in basic Nmap scans only uses port number to guess the service.
 
-\subsection{Using \texttt{nmap} service detection to confirm the SSH port}
+\subsection*{Using \texttt{nmap} service detection to confirm the SSH port}
 I used service detection to see if the SSH port had been moved to port 442. To do this, I used the command:\\
 \term{sudo nmap -sV -p 442 192.168.254.132}
 
@@ -277,11 +282,13 @@ A reconnaissance phase is performed automatically as the last step in the script
 
 I could see from the \texttt{recon.txt} file that Price is a member of the sudo group. This made the rest of the investigation easier to conceal as I could wipe/modify logs and create new users in order to keep the investigation concealed.
 
-Using the password discovered in the previous step of the investigation, I logged into Price's account via SSH to examine it and the machine remotely, and to gather more intelligence. [see screenshot proving log in and intel gathering] The command that I used to connect over SSH was:\\
+Using the password discovered in the previous step of the investigation, I logged into Price's account via SSH to examine it and the machine remotely, and to gather more intelligence. A screenshot showing the \texttt{ssh} login is available in Appendix~\ref{app:screenshots:2}. The command that I used to connect over SSH was:\\
 \term{ssh -p 442 phillip@192.168.254.132}
 
 I also used \texttt{scp} to pull a copy of the \texttt{/var/log/auth.log} from Price's machine -- it is attached, in a reduced form, in Appendix~\ref{app:files:authlog}. To do this, I used the command:\\
 \term{scp -P 442 phillip@192.168.254.132:/var/log/auth.log auth.log}
+
+I have also provided a screenshot of this step in Appendix~\ref{app:screenshots:3}.
 
 In this log file, I can see a lot of evidence of failed attempts to log into Price's SSH account on the machine before the correct password is found and authentication is successful -- I removed this file to conceal the investigation from Price.
 
@@ -297,7 +304,7 @@ After creating the \textit{'systemd-usertest'} user, I made it a member of the \
 
 With this new account, I was able and will continue to be able to access Price's machine on demand for the course of the investigation.
 
-The screenshot in Appendix [blahref] shows me accessing this new account over SSH from my attack machine.
+The screenshot in Appendix~\ref{app:screenshots:4} shows me accessing this new account over SSH from my attack machine.
 
 In order to hide the investigation from Price, I needed to prevent this new user from appearing on the login screen. To do this, I used the following steps over the SSH connection to his machine:
 \begin{enumerate}
@@ -322,7 +329,7 @@ xkb=gb
 
 
 \section{Setting up a \texttt{squid} proxy to monitor traffic}
-\subsection{Setting up \texttt{squid} on the attack machine}
+\subsection*{Setting up \texttt{squid} on the attack machine}
 In order to monitor Price's web traffic I set up a \texttt{squid} proxy on my attack machine. I did this using the following commands:
 \begin{enumerate}
   \item Install \texttt{squid} with:\\
@@ -337,7 +344,7 @@ In order to monitor Price's web traffic I set up a \texttt{squid} proxy on my at
         \term{sudo ufw allow from 192.168.254.0/24 to any port 3128}
 \end{enumerate}
 
-\subsection{Setting up Price's machine to use the proxy}
+\subsection*{Setting up Price's machine to use the proxy}
 % I could have configured Price's machine to use the proxy by entering the IP address and \texttt{squid} port into the proxy settings in Firefox. However, it would be easy for Price to see that a change had been made if he checked the proxy settings.
 %
 % Instead, I decided to configure the machine to use the proxy at the system level by using, via SSH to Price's machine, the commands:
@@ -347,11 +354,13 @@ In order to monitor Price's web traffic I set up a \texttt{squid} proxy on my at
 
 I logged into Price's machine, opened Firefox and configured it to use the proxy by entering the IP address of my attack machine and the \texttt{squid} proxy port (3128) in the settings.
 
-This was not very concealed and could have been noticed by Price.
+% This was not very concealed and could have been noticed by Price.
 
 
-\subsection{Proving with \texttt{wireshark} that the proxy is working}
-To prove that Price's machine was using the proxy on the attack machine correctly, I used \texttt{wireshark} to monitor the network. I have included a screenshot in Appendix~[x] and a link to the \texttt{capture1.pcapng} file in Appendix~[x].
+\subsection*{Proving with \texttt{wireshark} that the proxy is working}
+To prove that Price's machine was using the proxy on the attack machine correctly, I used \texttt{wireshark} to monitor the network. I have included a screenshot in Appendix~\ref{app:screenshots:7} and a link to the \texttt{capture1.pcapng} file in Appendix~\ref{app:links:capture_pcapng}.
+
+Screenshots showing the IP address of the attack machine and Price's machine are available in Appendix~\ref{app:screenshots:5} and Appendix~\ref{app:screenshots:6} respectively.
 
 
 \section{Concealing the investigation from Price}
@@ -446,39 +455,45 @@ todo: brood and conclude
 \chapter{Screenshot deliverables}
 \section{\texttt{ifconfig}, \texttt{arp-scan}, and \texttt{nmap}}
 \label{app:screenshots:1}
-\begin{figure}[h!]
+\begin{figure}[H]
 % \includegraphics[height=\textwidth, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-06-13-41-10}
 \includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-06-13-41-10}
 \end{figure}
-\pagebreak
+% \pagebreak
 \section{Connecting to Price's account with \texttt{ssh}}
 \label{app:screenshots:2}
-\begin{figure}[h!]
+\begin{figure}[H]
 \includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-15-19-29}
 \end{figure}
-\pagebreak
+% \pagebreak
 \section{Copying the \texttt{auth.log} with \texttt{scp}}
 \label{app:screenshots:3}
-\begin{figure}[h!]
+\begin{figure}[H]
 \includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-15-59-43}
 \end{figure}
-\pagebreak
+% \pagebreak
 \section{Connecting to the new \textit{'systemd-usertest'} account with \texttt{ssh}}
 \label{app:screenshots:4}
-\begin{figure}[h!]
+\begin{figure}[H]
 \includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-20-19-08}
 \end{figure}
-\pagebreak
+% \pagebreak
 \section{\texttt{ip a} on the attack machine}
 \label{app:screenshots:5}
-\begin{figure}[h!]
+\begin{figure}[H]
 \includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-20-16-17-08}
 \end{figure}
-\pagebreak
+% \pagebreak
 \section{\texttt{ip a} on Price's machine}
 \label{app:screenshots:6}
-\begin{figure}[h!]
+\begin{figure}[H]
 \includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-20-16-17-51}
+\end{figure}
+% \pagebreak
+\section{\texttt{wireshark}}
+\label{app:screenshots:7}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{wireshark}
 \end{figure}
 
 \pagebreak
@@ -491,9 +506,13 @@ todo: brood and conclude
 \label{app:files:authlog}
 \lstinputlisting[frame=single, basicstyle=\small\ttfamily, showstringspaces=false, breaklines=true, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space}]{deliverables/files/auth.log}
 
+\section{\texttt{capture1.pcapng}}
+\label{app:links:capture_pcapng}
+\url{https://drive.google.com/a/glam.ac.uk/file/d/1YWLs2TqMXl0\_lTfDchpIdunaAIa-mSDz/view?usp=sharing}
+
 \pagebreak
 \chapter{Code deliverables}
-\section{\texttt{sshcrack\_mp.py} - SSH Password Cracking Script}
+\section{\texttt{sshcrack\_mp.py} (SSH Password Cracking Script)}
 \label{app:code:sshcrack_mp}
 \lstinputlisting[language=Python, frame=single, basicstyle=\small\ttfamily, showstringspaces=false]{deliverables/code/sshcrack_mp.py}
 
