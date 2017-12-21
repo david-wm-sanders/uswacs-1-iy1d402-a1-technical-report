@@ -54,7 +54,7 @@
 % Cover page setup
 \maketitle
 \pagebreak
-% \includepdf[pages={1}]{assignmentbrief/IY1D402_CW1M_Cover_PRO_PROJECT1.pdf}
+\includepdf[pages={1}]{assignmentbrief/IY1D402_CW1M_Cover_PRO_PROJECT1.pdf}
 \fontsize{11.5pt}{11.5pt}\selectfont
 \tableofcontents
 \fontsize{12pt}{12pt}\selectfont
@@ -80,13 +80,6 @@ To aid in my investigation, I have been provided with a list of commonly used pa
 % -
 
 
-% Glossary
-% \pagebreak
-% \chapter{Glossary}
-% todo: Maybe add a glossary - one would probably included in this sort of technical report (that is, one with a not necessarily technical audience)
-% -
-
-
 % Preliminary Report
 \pagebreak
 \chapter{Preliminary Report}
@@ -95,15 +88,11 @@ During the investigation, I gathered a lot of information regarding Price's mach
 \begin{table}[h!]
   \centering
   \begin{tabular}{|r l|}
-    % \hline
-    % \multicolumn{2}{||l||}{Information} \\
-    % \hline\hline
     \hline
     IP address: & 192.168.254.132 \\
     \hline
     Operating system: & Linux Ubuntu 4.13.0-17-generic x86\_64 \\
     \hline
-    % Open Ports\footnotemark : & [details the ports] \\
     Open ports: & 80 \textit{[http]}, 442 \textit{[ssh; OpenSSH 7.5p1 Ubuntu 10]} \\
     \hline
     Closed ports: & 443 \textit{[https]} \\
@@ -114,7 +103,6 @@ During the investigation, I gathered a lot of information regarding Price's mach
   \caption{Information on Price's machine and account}
   \label{table:pricemachineinfo}
 \end{table}
-% \footnotetext{Common and in-range 1-1000}
 
 The IP address was found by scanning the network with \texttt{arp-scan} and the ports were found using \texttt{Nmap}
 
@@ -243,7 +231,7 @@ This command asked Nmap to attempt to do service detection against only port 442
 
 
 \section{Breaking into Price's account}
-Having discovered the SSH service port, I decided to try and break into Price's account via SSH using the list of passwords provided to me. Doing this manually by hand would be a time-consuming and arduous task individually and so I decided to write a script in Python to automate this attack.
+Having discovered the SSH service port, I decided to try and break into Price's account via SSH using the list of passwords provided to me. Doing this manually would be a time-consuming and arduous task individually and so I decided to write a script in Python to automate this attack.
 
 Using Python 3 and pexpect \textit{(a library for handling SSH connections)}, I wrote a script that:
 \begin{enumerate}
@@ -345,16 +333,7 @@ In order to monitor Price's web traffic I set up a \texttt{squid} proxy on my at
 \end{enumerate}
 
 \subsection*{Setting up Price's machine to use the proxy}
-% I could have configured Price's machine to use the proxy by entering the IP address and \texttt{squid} port into the proxy settings in Firefox. However, it would be easy for Price to see that a change had been made if he checked the proxy settings.
-%
-% Instead, I decided to configure the machine to use the proxy at the system level by using, via SSH to Price's machine, the commands:
-% \begin{itemize}
-%   \item \term{}
-% \end{itemize}
-
 I logged into Price's machine, opened Firefox and configured it to use the proxy by entering the IP address of my attack machine and the \texttt{squid} proxy port (3128) in the settings.
-
-% This was not very concealed and could have been noticed by Price.
 
 
 \subsection*{Proving with \texttt{wireshark} that the proxy is working}
@@ -366,7 +345,7 @@ Screenshots showing the IP address of the attack machine and Price's machine are
 \section{Concealing the investigation from Price}
 In addition to the steps detailed above in the previous stages, I also took a couple of other steps to reduce the chance of Price discovering the investigation.
 
-I used the \term{uptime} command to check, when logging in over SSH, that I was the only user logged into the machine. This allowed to me to make changes that Price might have noticed if he was also using the machine at the same time.
+I used the \term{uptime} command to check, when logging in over SSH, that I was the only user logged into the machine. This allowed me to make changes that Price might have noticed if he was also using the machine at the same time.
 
 I also made sure to regularly clear the commands I had used from the \texttt{.bash\_history} file so that Price, if he checked this file, would not find that someone else had been using the machine.
 
@@ -381,8 +360,6 @@ In this section, I will discuss briefly the capabilities of the tools I used in 
 In the investigation, \texttt{arp-scan} was used to discover the IP address of Price's machine.
 \subsection*{Alternative Tools/Methods}
 \texttt{nmap} can also be used to perform network discovery.
-% with the command:\\
-% \term{todo: put command here}
 
 \section{\texttt{nmap}}
 \texttt{nmap} \textit{("Network Mapper")} is an open source tool for network exploration and security auditing.\footnote{https://nmap.org/book/man.html} Although it can be used to scan individual hosts, it was designed to allow large networks to be scanned rapidly. \texttt{nmap} is capable of determining the available hosts on a network, the services that these hosts are providing, the operating systems that they are running, the type of packet filters/firewalls that are in use, and other characteristics. As well as being used for security audits, it can also be useful for routine system/network administration tasks such as inventorying the network, service upgrade schedule management, and monitoring host/service uptime.
@@ -439,7 +416,7 @@ However, although viewed by some as a whistleblower, the U.S. Government and oth
 \subsection*{Ten Tales of Betrayal: The Threat to Corporate Infrastructures by Information Technology Insiders: Analysis and Observations}
 In a report by \cite{pdf:perserec:insider_threat_examples:200509}, some other examples of insider threat are discussed and the impacts and consequences, to both the organisations and insiders involved, are detailed.
 
-One interesting example from this report is \textit{"The Thief"} -- this unnamed individual, a 23 year old white male who worked on a network helpdesk for an ISP, leaked data to an unauthorized competitor. The damage was a loss of propriety data, competitive advantage, and corporate reputation. He was given 6 months of probation for this offence.
+One interesting example from this report is \textit{"The Thief"} -- this unnamed individual, a 23 year old white male who worked on a network helpdesk for an ISP, leaked data to an unauthorized competitor. The damage was a loss of proprietary data, competitive advantage, and corporate reputation. He was given 6 months of probation for this offence.
 
 
 \section{Suggested methods for improving security in the future}
@@ -462,17 +439,6 @@ According to \cite{site:digitalocean:insider_threat_examples:20141020}, some of 
 Whereas password authentication is vulnerable to automated brute-forcing \textit{(like that performed by the SSH cracking script used in the investigation)}, key-based authentication is not.
 
 In key-based authentication, a public-private keypair is created and used to verify the client's identity. The private key is kept on the client machine (and should ideally be encrypted with a password/passphrase) and the public key is added to the user's \texttt{~/.ssh/authorized\_keys} directory on the server machine. The server can then use asymmetric encryption to test that the client connecting to it owns the private key associated with the public key in the authorised keys directory.
-
-
-% \pagebreak
-% \chapter{Conclusion}
-% todo: brood and conclude
-
-
-% Post-main configuration
-% Increase the line spacing to 1x(=1.0), 1.5x(=1.3) or 2x(=1.6)
-% \linespread{1.0}
-% \selectfont
 
 
 % BIBLIOGRAPHY/REFERENCES
