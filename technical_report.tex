@@ -411,7 +411,9 @@ There a lot of different forwarding proxies that could have been used in place o
 Squid was a good choice because it is available in the package repositories for Ubuntu (the base of the attack VM used in the investigation), and is well-supported and documented.
 
 \section{\texttt{wireshark}}
-todo: Write some stuff about wireshark here...
+Wireshark\footnote{https://www.wireshark.org/about} is a piece of FOSS (free open-source software) for packet capture and analysis. Cross-platform and with a GUI, it can be used to perform both live capture of packets from a network connection and offline analysis. With support for the deep inspection of hundreds of protocols, it can dissect packets and display the values of the fields, at different layers of the OSI model, in an easy-to-view tree form.
+\subsection*{Alternative Tools/Methods}
+Wireshark uses the \texttt{pcap} API \textit{(packet capture application programming interface)} to capture network traffic - on Unix-like systems this is implemented by the \texttt{libpcap} library and Windows uses a port of this library called \texttt{WinPcap}. Other tools, which could have been used instead of Wireshark, include \texttt{tcpdump}/\texttt{WinDump}, \texttt{ngrep}, and \texttt{scapy} \textit{(a Python library)} as these also make use of \texttt{pcap} internally.
 
 
 \pagebreak
@@ -451,49 +453,55 @@ todo: brood and conclude
 % APPENDICES
 \appendix
 
-\pagebreak
+% \pagebreak
 \chapter{Screenshot deliverables}
 \section{\texttt{ifconfig}, \texttt{arp-scan}, and \texttt{nmap}}
 \label{app:screenshots:1}
 \begin{figure}[H]
-% \includegraphics[height=\textwidth, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-06-13-41-10}
-\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-06-13-41-10}
+  \centering
+  \includegraphics[width=0.7\paperheight, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-06-13-41-10}
 \end{figure}
 % \pagebreak
 \section{Connecting to Price's account with \texttt{ssh}}
 \label{app:screenshots:2}
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-15-19-29}
+  \centering
+  \includegraphics[width=0.7\paperheight, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-19-15-19-29}
 \end{figure}
 % \pagebreak
-\section{Copying the \texttt{auth.log} with \texttt{scp}}
+\section{Copying the \texttt{/var/log/auth.log} with \texttt{scp}}
 \label{app:screenshots:3}
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-15-59-43}
+  \centering
+  \includegraphics[width=0.7\paperheight, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-19-15-59-43}
 \end{figure}
 % \pagebreak
 \section{Connecting to the new \textit{'systemd-usertest'} account with \texttt{ssh}}
 \label{app:screenshots:4}
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-19-20-19-08}
+  \centering
+  \includegraphics[width=0.7\paperheight, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-19-20-19-08}
 \end{figure}
 % \pagebreak
 \section{\texttt{ip a} on the attack machine}
 \label{app:screenshots:5}
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-20-16-17-08}
+  \centering
+  \includegraphics[width=0.7\paperheight, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-20-16-17-08}
 \end{figure}
 % \pagebreak
 \section{\texttt{ip a} on Price's machine}
 \label{app:screenshots:6}
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{It's_Elementary_my_dear_Watson!-2017-12-20-16-17-51}
+  \centering
+  \includegraphics[width=0.7\paperheight, angle=-90]{It's_Elementary_my_dear_Watson!-2017-12-20-16-17-51}
 \end{figure}
 % \pagebreak
 \section{\texttt{wireshark}}
 \label{app:screenshots:7}
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{wireshark}
+  \centering
+  \includegraphics[width=0.7\paperheight, angle=-90]{wireshark}
 \end{figure}
 
 \pagebreak
